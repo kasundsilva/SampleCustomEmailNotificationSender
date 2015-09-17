@@ -3,7 +3,7 @@ package org.wso2.carbon.custom.email.notification.sender.internal;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.custom.email.notification.sender.CustomEmailNotificationSenderDSComponentHolder;
+import org.wso2.carbon.custom.email.notification.sender.RealmServiceDataHolder;
 import org.wso2.carbon.user.core.service.RealmService;
 
 /**
@@ -29,21 +29,15 @@ public class CustomEmailNotificationSenderDSComponent {
 
     protected void setRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
-
             log.debug("Setting the Realm Service");
         }
-        CustomEmailNotificationSenderDSComponentHolder.setRealmService(realmService);
+        RealmServiceDataHolder.setRealmService(realmService);
     }
 
     protected void unsetRealmService(RealmService realmService) {
         if (log.isDebugEnabled()) {
             log.debug("UnSetting the Realm Service");
         }
-        CustomEmailNotificationSenderDSComponentHolder.setRealmService(null);
+        RealmServiceDataHolder.setRealmService(null);
     }
-
-    public static RealmService getRealmService() {
-        return CustomEmailNotificationSenderDSComponentHolder.getRealmService();
-    }
-
 }

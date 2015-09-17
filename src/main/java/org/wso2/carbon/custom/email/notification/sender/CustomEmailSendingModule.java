@@ -20,7 +20,6 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.DefaultHttpClient;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.core.CarbonConfigurationContextFactory;
-import org.wso2.carbon.custom.email.notification.sender.internal.CustomEmailNotificationSenderDSComponent;
 import org.wso2.carbon.identity.mgt.mail.AbstractEmailSendingModule;
 import org.wso2.carbon.identity.mgt.mail.Notification;
 import org.wso2.carbon.identity.mgt.util.Utils;
@@ -45,7 +44,6 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
     private static final String SMS_ENDPOINT = "http://kasuns-ThinkPad:8281/services/SMSProxy";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
-
     /**
      * Retrieve the Claim URIs of Default WSO2 Claim Dialect
      *
@@ -55,7 +53,7 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
         List<String> carbonClaimUris = new ArrayList<String>();
         try {
             ClaimManager claimManager =
-                    (ClaimManager) CustomEmailNotificationSenderDSComponent.getRealmService().getTenantUserRealm(
+                    (ClaimManager) RealmServiceDataHolder.getRealmService().getTenantUserRealm(
                             PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantId()).getClaimManager();
 
             ClaimMapping[] claimMappings = (ClaimMapping[]) claimManager.getAllClaimMappings(
@@ -134,6 +132,7 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
             // Sending the SMS with the same msg body
             SendSMS(claimsMap.get(MOBILE_CLAIM_URI), body);
 
+
             headerMap.put(MailConstants.MAIL_HEADER_SUBJECT, this.notification.getSubject());
 
             OMElement payload = OMAbstractFactory.getOMFactory().createOMElement(
@@ -157,7 +156,7 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
             options.setProperty(MessageContext.TRANSPORT_HEADERS, headerMap);
             options.setProperty(MailConstants.TRANSPORT_MAIL_FORMAT,
                                 MailConstants.TRANSPORT_FORMAT_TEXT);
-            options.setTo(new EndpointReference("mailto : " + this.notification.getSendTo()));
+            options.setTo(new EndpointReference("mailto:" + this.notification.getSendTo()));
             serviceClient.setOptions(options);
 
             if (log.isDebugEnabled()) {
@@ -168,10 +167,10 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
             if (log.isDebugEnabled()) {
                 log.debug("Email content : " + this.notification.getBody());
             }
-            log.info("Email has been sent to " + this.notification.getSendTo());
 
+            log.info("Email has been sent to " + this.notification.getSendTo());
         } catch (Exception e) {
-            log.error("Failed Sending Notification ", e);
+            log.error("Failed Sending Email ", e);
         } finally {
             PrivilegedCarbonContext.endTenantFlow();
         }
@@ -207,7 +206,6 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
         return this.notification;
     }
 
-
     private void SendSMS(String mobileNo, String body) throws IOException {
         if (log.isDebugEnabled()) {
             log.debug("Sending SMS Utility");
@@ -218,8 +216,9 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
         String smsBody = body;
         smsBody = smsBody.replaceAll("(\\r|\\n|\\t)", "");
 
-
-        System.out.println("############3 smsBody : " + smsBody);
+        if (log.isDebugEnabled()) {
+            log.debug("SMS Content  : " + smsBody);
+        }
         String jsonString = "{\"transactionId\":\"test_val\", \"provider\":\"kannel\", \"recipients\":\"" + mobileNo + "\", \"account\":\"6762\", \"body\":\"" + smsBody + "\"}";
         StringEntity requestEntity = new StringEntity(jsonString, APPLICATION_JSON, "UTF-8");
 

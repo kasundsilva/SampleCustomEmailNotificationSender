@@ -2,10 +2,9 @@ package org.wso2.carbon.custom.email.notification.sender;
 
 import org.wso2.carbon.user.core.service.RealmService;
 
-public class CustomEmailNotificationSenderDSComponentHolder {
+public class RealmServiceDataHolder {
 
     private static RealmService realmService;
-
 
     /**
      * Get realm service
@@ -22,8 +21,6 @@ public class CustomEmailNotificationSenderDSComponentHolder {
      * @param realmService
      */
     public static void setRealmService(RealmService realmService) {
-        CustomEmailNotificationSenderDSComponentHolder.realmService = realmService;
+        RealmServiceDataHolder.realmService = realmService;
     }
-
-
 }
