@@ -41,7 +41,7 @@ public class CustomEmailSendingModule extends AbstractEmailSendingModule {
     private static Log log = LogFactory.getLog(CustomEmailSendingModule.class);
     private Notification notification;
     private static final String MOBILE_CLAIM_URI = "http://wso2.org/claims/mobile";
-    private static final String SMS_ENDPOINT = "http://kasuns-ThinkPad:8281/services/SMSProxy";
+    private static final String SMS_ENDPOINT = "http://54.174.194.228:8183/dcpp/rs/send/sms/send-message";
     private static final String CONTENT_TYPE = "Content-Type";
     private static final String APPLICATION_JSON = "application/json";
     /**
